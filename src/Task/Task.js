@@ -1,4 +1,5 @@
 import React from "react";
+import moment from "moment";
 import "./Task.css";
 
 function Task(props) {
@@ -11,10 +12,10 @@ function Task(props) {
                 {props.urgent === true ? " URGENT" : ""}
             </div>
             <div className="col-3 col-md-2">
-                {props.dueDate}
+                {moment(props.dueDate).format("ddd, MMMM Do, h:mm")}
             </div>
             <div className="col-3 col-md-2">
-                <button type="button" class="btn btn-success">Completed</button>
+                {props.completed === false && <button type="button" class="btn btn-success">Completed</button>}
             </div>
             <div className="col-3 col-md-2">
                 <button type="button" class="btn btn-outline-primary">Delete</button>

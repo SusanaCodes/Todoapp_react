@@ -40,6 +40,17 @@ function App() {
   setTasks(newTasks);
 }
 
+const addNewTask = (text, date, urgent) => {
+  const newTask = {
+    text: text,
+    dueDate: date,
+    urgent : urgent,
+    completed: false, 
+    id : Math.random()*1000
+  };
+const newTasks = [...tasks, newTask];
+setTasks (newTasks);
+}
 
 return (
   <div className="App">
@@ -47,7 +58,7 @@ return (
     <main>
       <TaskCount count={tasks.length} />
       <div className="container">
-        <AddNewTask />
+        <AddNewTask addNewTaskFunc={addNewTask}/>
         {tasks.map(function (task) {
           return <Task key={task.id} deleteTaskFunc={deleteTask} completeTaskFunc= {completeTask}text={task.text} urgent={task.urgent} completed={task.completed} dueDate={task.dueDate} id={task.id} />;
         })}

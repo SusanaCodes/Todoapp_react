@@ -22,7 +22,7 @@ const Task = (props) => {
                 {props.urgent === true ? " URGENT" : ""}
             </div>
             <div className="col-3 col-md-2">
-                {moment(props.dueDate).format("ddd, MMMM Do, h:mm")}
+                {moment(props.Date).format("ddd, MMMM Do, h:mm")}
             </div>
             <div className="col-3 col-md-2">
                 {props.completed === false && <button type="button" class="btn btn-success" onClick={handlecompleteClick}>Completed</button>}

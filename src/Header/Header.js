@@ -1,11 +1,24 @@
 import React from "react";
 import "./Header.css";
 
-function Header (){
+function Header() {
     return (
+
         <header>
-            <h1 id = "mainTitle" >My To do List</h1>
-            <h3>Keep your "to do" in track!</h3>
+            
+            <div class="card text-center">
+                <div class="card-header">
+
+                </div>
+                <div class="card-body">
+                    <h1 class="card-title">My todo list</h1>
+                    <p class="card-text">How to Accomplish Any Goal with a daily Action Plan</p>
+                    <p class="card-text">need putting current date and time</p>
+                 
+                </div>
+                
+  </div>
+           
         </header>
     )
 }

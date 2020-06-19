@@ -1,71 +1,109 @@
-import React, { useState } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./App.css";
 import Header from "./Header/Header";
 import TaskCount from "./TaskCount/TaskCount";
 import Task from "./Task/Task";
 import AddNewTask from "./NewTask/AddNewTask";
 
 function App() {
+  const [tasks, setTasks] = useState([]);
 
-  const [tasks, setTasks] = useState([
-    { id: 1, text: "HIIT", urgent: false, completed: false, dueDate: "2020-30-03" },
-    { id: 2, text: "Study", urgent: true, completed: true, dueDate: "2020-23-03" },
-    { id: 3, text: "Weekly shopping", urgent: false, completed: false, dueDate: "2020-27-03" },
-    { id: 4, text: "Clean house", urgent: false, completed: true, dueDate: "2020-22-03" },
-    { id: 5, text: "Organize food routa for the week", urgent: false, completed: false, dueDate: "2020-30-03" },
-    { id: 6, text: "Prepare homeschooling for the week", urgent: true, completed: true, dueDate: "2020-23-03" },
-    { id: 7, text: "Call family", urgent: false, completed: true, dueDate: "2020-20-03" },
-  ]);
+  useEffect(() => {
+    axios
+      .get("https://1b3m8txju4.execute-api.eu-west-1.amazonaws.com/dev/tasks")
+      .then((response) => {
+        console.log("Success", response.data);
+        setTasks(response.data);
+      })
+      .catch((err) => {
+        console.log("Error", err);
+      });
+  }, []);
 
   const deleteTask = (id) => {
-    const filteredTasks = tasks.filter((task) => {
-      if (task.id === id) {
-        return false;
-      } else {
-        return true;
-      }
-    });
-    setTasks(filteredTasks);
+    axios
+      .delete(
+        "https://1b3m8txju4.execute-api.eu-west-1.amazonaws.com/dev/tasks/{id}"
+      )
+      .then((response) => {
+        const filteredTasks = tasks.filter((task) => {
+          return task.TaskId !== id;
+        });
+        setTasks(filteredTasks);
+      })
+      .catch((err) => {
+        console.log("API Error, err");
+      });
   };
 
   const completeTask = (id) => {
-    const newTasks = tasks.map(task => {
-      if (task.id === id) {
-        task.completed = true;
-      }
-      return task;
+    axios
+      .put(
+        `https://1b3m8txju4.execute-api.eu-west-1.amazonaws.com/dev/tasks/{id}`,
+        {
+          Completed: true,
+        }
+      )
+      .then((response) => {
+        const newTasks = tasks.map((task) => {
+          if (task.TaskId === id) {
+            task.Completed = 1;
+          }
+          return task;
         });
-
-  setTasks(newTasks);
-}
-
-const addNewTask = (text, date, urgent) => {
-  const newTask = {
-    text: text,
-    dueDate: date,
-    urgent : urgent,
-    completed: false, 
-    id : Math.random()*1000
+        setTasks(newTasks);
+      })
+      .catch((err) => {
+        console.log("Error updating Task", err);
+      });
   };
-const newTasks = [...tasks, newTask];
-setTasks (newTasks);
-}
 
-return (
-  <div className="App">
-    <Header />
-    <main>
-      <TaskCount count={tasks.length} />
-      <div className="container">
-        <AddNewTask addNewTaskFunc={addNewTask}/>
-        {tasks.map(function (task) {
-          return <Task key={task.id} deleteTaskFunc={deleteTask} completeTaskFunc= {completeTask}text={task.text} urgent={task.urgent} completed={task.completed} dueDate={task.dueDate} id={task.id} />;
-        })}
-      </div>
-    </main>
-  </div>
-);
+  const addNewTask = (text, date, urgent) => {
+    axios
+      .post(
+        "https://1b3m8txju4.execute-api.eu-west-1.amazonaws.com/dev/tasks",
+        {
+          Description: text,
+          DueDate: date,
+          Urgent: urgent,
+        }
+      )
+      .then((response) => {
+        const newTask = response.data;
+        const newTasks = [...tasks, newTask];
+        setTasks(newTasks);
+      })
+      .catch((err) => {
+        console.log("Error creating task", err);
+      });
+  };
+
+  return (
+    <div className="App">
+      <Header />
+      <main>
+        <TaskCount count={tasks.length} />
+        <div className="container">
+          <AddNewTask addNewTaskFunc={addNewTask} />
+          {tasks.map((task) => {
+            return (
+              <Task
+                key={task.id}
+                deleteTaskFunc={deleteTask}
+                markcompleteTaskFunc={completeTask}
+                text={task.Description}
+                urgent={task.Urgent}
+                completed={task.Completed}
+                dueDate={task.DueDate}
+                id={task.TaskId}
+              />
+            );
+          })}
+        </div>
+      </main>
+    </div>
+  );
 }
 
 export default App;

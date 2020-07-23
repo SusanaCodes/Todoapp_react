@@ -22,7 +22,7 @@ const Task = (props) => {
         {moment(props.dueDate).format("ddd, MMMM Do, h:mm")}
       </div>
       <div className="col-3 col-md-2">
-        {props.completed === false && (
+        {props.completed === 0 && (
           <button
             type="button"
             class="btn btn-success"

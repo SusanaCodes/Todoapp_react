@@ -110,7 +110,7 @@ function AddNewTask(props) {
           checked={urgent}
           onChange={handleUrgentChange}
         />
-        <label class="form-check-label" htmlfor="urgentCheck">
+        <label class="form-check-label" htmlFor="urgentCheck">
           URGENT
         </label>
       </div>
